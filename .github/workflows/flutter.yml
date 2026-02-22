@@ -1,46 +1,45 @@
 name: Build & Release Flutter APK
 
 on:
-push:
-branches:
-  - master
+  push:
+    branches:
+      - master
 
 jobs:
-build:
-runs-on: ubuntu-latest
+  build:
+    runs-on: ubuntu-latest
 
-steps:
-  - name: Checkout repository
-    uses: actions/checkout@v4
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
 
-  - name: Setup Java
-    uses: actions/setup-java@v4
-    with:
-      distribution: 'temurin'
-      java-version: '17'
+      - name: Setup Java
+        uses: actions/setup-java@v4
+        with:
+          distribution: 'temurin'
+          java-version: '17'
 
-  - name: Setup Flutter
-    uses: subosito/flutter-action@v2
-    with:
-      flutter-version: '3.41.2'
+      - name: Setup Flutter
+        uses: subosito/flutter-action@v2
+        with:
+          flutter-version: '3.41.2'
 
-  - name: Get dependencies
-    run: flutter pub get
+      - name: Get dependencies
+        run: flutter pub get
 
-  - name: Build Release APK
-    run: flutter build apk --release
+      - name: Build Release APK
+        run: flutter build apk --release
 
-  - name: Get version from pubspec
-    run: |
-      VERSION=$(grep '^version:' pubspec.yaml | awk '{print $2}')
-      echo "TAG=v$VERSION" >> $GITHUB_ENV
+      - name: Get version from pubspec
+        run: |
+          VERSION=$(grep '^version:' pubspec.yaml | awk '{print $2}')
+          echo "TAG=v$VERSION" >> $GITHUB_ENV
 
-  - name: Create GitHub Release
-    uses: softprops/action-gh-release@v2
-    with:
-      tag_name: ${{ env.TAG }}
-      name: Release ${{ env.TAG }}
-      files: build/app/outputs/flutter-apk/app-release.apk
-    env:
-      GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-
+      - name: Create GitHub Release
+        uses: softprops/action-gh-release@v2
+        with:
+          tag_name: ${{ env.TAG }}
+          name: Release ${{ env.TAG }}
+          files: build/app/outputs/flutter-apk/app-release.apk
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
