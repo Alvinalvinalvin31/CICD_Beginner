@@ -35,7 +35,7 @@ jobs:
           echo "keyPassword=${{ secrets.KEY_PASSWORD }}" >> android/key.properties
 
       - name: Build Release APK
-        run: flutter build apk
+        run: flutter build apk --release
 
       - name: Get version from pubspec
         run: |
